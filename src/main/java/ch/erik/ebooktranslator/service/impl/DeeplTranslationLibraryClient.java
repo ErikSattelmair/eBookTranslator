@@ -1,6 +1,8 @@
 package ch.erik.ebooktranslator.service.impl;
 
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +15,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Locale;
 
 @Service
 @Slf4j
@@ -32,7 +33,8 @@ public class DeeplTranslationLibraryClient implements TranslationLibraryClient {
         languageChooser.click();
 
         final WebDriverWait wait = new WebDriverWait(browser, 5);
-        final WebElement language = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button[dl-lang='" + Locale.FRENCH.getLanguage().toUpperCase() + "']")));
+        final String languageXpath = "//*[@id=\"dl_translator\"]/div[1]/div[4]/div[1]/div[1]/div[1]/div/button[@dl-test=\"translator-lang-option-" + SUPPORTED_LANGUAGES.PORTUGUESE_BRAZILIAN.getLanguageCode() + "\"]";
+        final WebElement language = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(languageXpath)));
         language.click();
 
         final WebElement sourceTextArea = browser.findElement(By.className("lmt__source_textarea"));
@@ -45,5 +47,24 @@ public class DeeplTranslationLibraryClient implements TranslationLibraryClient {
         browser.close();
 
         return translatedText;
+    }
+
+    @AllArgsConstructor
+    private enum SUPPORTED_LANGUAGES {
+        GERMAN("de-DE"),
+        ENGLISH("en-EN"),
+        FRENCH("fr-FR"),
+        SPANISH("es-ES"),
+        PORTUGUESE("pt-PT"),
+        PORTUGUESE_BRAZILIAN("pt-BR"),
+        ITALIAN("it-IT"),
+        DUTCH("nl-NL"),
+        POLISH("pl-PL"),
+        RUSSIAN("ru-RU"),
+        JAPANESE("ja-JA"),
+        CHINESE_SIMPLE("zh-ZH");
+
+        @Getter
+        private final String languageCode;
     }
 }
