@@ -3,7 +3,6 @@ package ch.erik.ebooktranslator.service;
 import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.service.impl.DeeplTranslationLibraryClient;
 import ch.erik.ebooktranslator.service.impl.EBookFileTranslator;
-import ch.erik.ebooktranslator.service.impl.HtmlFragmentProcessorImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,11 +35,6 @@ public class EpubFileReaderTest {
         @Bean
         public EBookTranslator eBookTranslator() {
             return new EBookFileTranslator();
-        }
-
-        @Bean
-        public HtmlFragmentProcessor htmlFragmentParser() {
-            return new HtmlFragmentProcessorImpl();
         }
 
         @Bean

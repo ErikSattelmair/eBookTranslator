@@ -1,9 +1,12 @@
 package ch.erik.ebooktranslator.service;
 
+import nl.siegmann.epublib.domain.Resource;
+
 import java.io.IOException;
+import java.util.List;
 
 public interface TranslationLibraryClient {
 
-    String translate(final String sourceText) throws IOException;
+    boolean translate(final List<Resource> textResources) throws IOException;
 
 }

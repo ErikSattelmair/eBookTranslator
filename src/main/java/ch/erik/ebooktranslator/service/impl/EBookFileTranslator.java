@@ -2,12 +2,12 @@ package ch.erik.ebooktranslator.service.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.service.EBookTranslator;
-import ch.erik.ebooktranslator.service.HtmlFragmentProcessor;
+import ch.erik.ebooktranslator.service.TranslationLibraryClient;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.epub.EpubWriter;
-import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class EBookFileTranslator implements EBookTranslator {
 
     @Autowired
-    private HtmlFragmentProcessor htmlFragmentProcessor;
+    private TranslationLibraryClient translationLibraryClient;
 
     @Override
     public byte[] translateEBook(final byte[] source) throws TranslationException {
         if(source != null) {
-            final nl.siegmann.epublib.epub.EpubReader epubReader = new nl.siegmann.epublib.epub.EpubReader();
+            final EpubReader epubReader = new nl.siegmann.epublib.epub.EpubReader();
 
             try {
                 final InputStream inputStream = new ByteArrayInputStream(source);
@@ -36,9 +36,7 @@ public class EBookFileTranslator implements EBookTranslator {
                 final List<Resource> resources = book.getContents();
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
-                for (final Resource textResource : textResources) {
-                    textResource.setData(htmlFragmentProcessor.processHtmlFragment(textResource.getData()));
-                }
+                this.translationLibraryClient.translate(textResources);
 
                 inputStream.close();
 
@@ -48,7 +46,7 @@ public class EBookFileTranslator implements EBookTranslator {
                 outputStream.close();
 
                 return outputStream.toByteArray();
-            } catch (IOException | JDOMException e) {
+            } catch (IOException e) {
                 throw new TranslationException(e.getMessage(), e);
             }
 
