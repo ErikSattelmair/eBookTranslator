@@ -1,13 +1,17 @@
 package ch.erik.ebooktranslator.service.impl;
 
+import ch.erik.ebooktranslator.service.ProxyHelper;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.UserAgent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -26,7 +30,15 @@ public class DeeplTranslationLibraryClient implements TranslationLibraryClient {
     public String translate(String sourceText) throws IOException {
         System.setProperty("webdriver.chrome.driver", new ClassPathResource("driver/chromedriver").getFile().getPath());
 
-        final WebDriver browser = new ChromeDriver();
+        // Set proxy
+        final Proxy proxy = new Proxy();
+        proxy.setHttpProxy(ProxyHelper.getRandomProxy());
+
+        final ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setCapability("proxy", proxy);
+        chromeOptions.addArguments("user-agent=" + UserAgent.getRandomUserAgent());
+
+        final WebDriver browser = new ChromeDriver(chromeOptions);
         browser.get(DEEPL_URL);
 
         final WebElement languageChooser = browser.findElement(By.className("lmt__language_select--target"));
