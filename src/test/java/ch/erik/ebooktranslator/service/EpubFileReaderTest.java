@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.service.impl.DeeplTranslationLibraryClient;
 import ch.erik.ebooktranslator.service.impl.EBookFileTranslator;
 import ch.erik.ebooktranslator.service.impl.HtmlFragmentProcessorImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -22,24 +23,29 @@ public class EpubFileReaderTest {
     private static final String EPUB_FILE_PATH = "epub/resource1.epub";
 
     @Autowired
-    private EBookTranslator EBookTranslator;
+    private EBookTranslator eBookTranslator;
 
     @Test
     @DisplayName("Test")
     public void testEpubFileReader() throws TranslationException, IOException {
-        this.EBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()));
+        this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()));
     }
 
     public static class Configuration {
 
         @Bean
-        public EBookTranslator epubReader() {
+        public EBookTranslator eBookTranslator() {
             return new EBookFileTranslator();
         }
 
         @Bean
-        public XmlFragmentProcessor xmlFragmentParser() {
+        public XmlFragmentProcessor htmlFragmentParser() {
             return new HtmlFragmentProcessorImpl();
+        }
+
+        @Bean
+        private TranslationLibraryClient translationLibraryClient() {
+            return new DeeplTranslationLibraryClient();
         }
 
     }

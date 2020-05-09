@@ -27,7 +27,7 @@ public class FileEBookSourceFetchService implements EBookSourceFetchService {
         final String[] list = downloadDirectory.list(filter);
 
         if (list == null || list.length != 1) {
-            throw new Exception("No files end with:" + RELEVANT_FILE_EXTENSION);
+            throw new Exception("No files end with " + RELEVANT_FILE_EXTENSION + "in directory " + directoryPath);
         }
 
         final File ebookFile = new File(directoryPath + File.separator + list[0]);

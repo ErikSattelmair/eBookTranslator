@@ -8,7 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,9 +22,12 @@ public class EBookLibraryClientImpl implements EBookLibraryClient {
     private static final String CREDENTIALS_E_MAIL = "erik.sattelmair@gmx.de";
     private static final String CREDENTIALS_PASSWORD = "$&%oRN&YGC0PFsj*GPPqzfK!";
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @Override
     public void downloadEBook() throws IOException {
-        System.setProperty("webdriver.chrome.driver", new ClassPathResource("driver/chromedriver").getFile().getPath());
+        System.setProperty("webdriver.chrome.driver", this.resourceLoader.getResource("classpath:/driver/chromedriver").getFile().getPath());
 
         final WebDriver browser = new ChromeDriver();
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class WorkflowEngineImpl implements WorkflowEngine {
 
-    private static final String DOWNLOAD_FOLDER = "";
+    private static final String DOWNLOAD_FOLDER = "/Users/erik/Downloads";
 
     @Autowired
     private EBookLibraryClient eBookLibraryClient;
