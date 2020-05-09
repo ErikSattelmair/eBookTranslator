@@ -1,6 +1,6 @@
 package ch.erik.ebooktranslator.service.impl;
 
-import ch.erik.ebooktranslator.service.ProxyHelper;
+import ch.erik.ebooktranslator.service.BrowserUtil;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,14 +12,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -33,10 +29,10 @@ public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryCli
     //private static final String DEEPL_URL = "https://www.whatsmyip.org/";
 
     private static final String DEEPL_URL = "https://www.deepl.com/translator";
-    
+
     @Override
     public boolean translate(final List<Resource> textResources) throws IOException {
-        final WebDriver browser = createBrowser();
+        final WebDriver browser = BrowserUtil.createBrowser();
         browser.get(DEEPL_URL);
 
         final WebElement languageChooser = browser.findElement(By.className("lmt__language_select--target"));
@@ -63,22 +59,6 @@ public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryCli
         browser.close();
 
         return true;
-    }
-
-    private WebDriver createBrowser() throws IOException {
-        System.setProperty("webdriver.chrome.driver", new ClassPathResource("driver/chromedriver").getFile().getPath());
-
-        // Set proxy
-        final Proxy proxy = new Proxy();
-        final String proxyAddress = ProxyHelper.getRandomProxy();
-        proxy.setHttpProxy(proxyAddress);
-        proxy.setSslProxy(proxyAddress);
-        proxy.setFtpProxy(proxyAddress);
-
-        final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setCapability("proxy", proxy);
-
-        return new ChromeDriver(chromeOptions);
     }
 
     private String translateText(final WebDriver browser, final String text) {
