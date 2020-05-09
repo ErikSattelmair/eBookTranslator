@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -44,14 +43,14 @@ public class DeeplTranslationLibraryClient implements TranslationLibraryClient {
         final WebElement languageChooser = browser.findElement(By.className("lmt__language_select--target"));
         languageChooser.click();
 
-        final WebDriverWait wait = new WebDriverWait(browser, 5);
         final String languageXpath = "//*[@id=\"dl_translator\"]/div[1]/div[4]/div[1]/div[1]/div[1]/div/button[@dl-test=\"translator-lang-option-" + SUPPORTED_LANGUAGES.PORTUGUESE_BRAZILIAN.getLanguageCode() + "\"]";
-        final WebElement language = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(languageXpath)));
+        final WebElement language = browser.findElement(By.xpath(languageXpath));
         language.click();
 
         final WebElement sourceTextArea = browser.findElement(By.className("lmt__source_textarea"));
         sourceTextArea.sendKeys(sourceText);
 
+        final WebDriverWait wait = new WebDriverWait(browser, 5);
         wait.until((ExpectedCondition<Boolean>) driver -> driver.findElement(By.className("lmt__target_textarea")).getAttribute("value").length() != 0);
 
         final String translatedText = browser.findElement(By.className("lmt__target_textarea")).getAttribute("value");
