@@ -4,7 +4,7 @@ import org.jdom2.JDOMException;
 
 import java.io.IOException;
 
-public interface XmlFragmentProcessor {
+public interface HtmlFragmentProcessor {
 
     byte[] processHtmlFragment(final byte[] xmlFragment) throws JDOMException, IOException;
 

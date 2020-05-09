@@ -39,7 +39,7 @@ public class EpubFileReaderTest {
         }
 
         @Bean
-        public XmlFragmentProcessor htmlFragmentParser() {
+        public HtmlFragmentProcessor htmlFragmentParser() {
             return new HtmlFragmentProcessorImpl();
         }
 

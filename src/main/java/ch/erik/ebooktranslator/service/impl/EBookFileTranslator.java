@@ -2,7 +2,7 @@ package ch.erik.ebooktranslator.service.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.service.EBookTranslator;
-import ch.erik.ebooktranslator.service.XmlFragmentProcessor;
+import ch.erik.ebooktranslator.service.HtmlFragmentProcessor;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -11,7 +11,10 @@ import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 public class EBookFileTranslator implements EBookTranslator {
 
     @Autowired
-    private XmlFragmentProcessor xmlFragmentProcessor;
+    private HtmlFragmentProcessor htmlFragmentProcessor;
 
     @Override
     public byte[] translateEBook(final byte[] source) throws TranslationException {
@@ -34,7 +37,7 @@ public class EBookFileTranslator implements EBookTranslator {
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
                 for (final Resource textResource : textResources) {
-                    textResource.setData(xmlFragmentProcessor.processHtmlFragment(textResource.getData()));
+                    textResource.setData(htmlFragmentProcessor.processHtmlFragment(textResource.getData()));
                 }
 
                 inputStream.close();

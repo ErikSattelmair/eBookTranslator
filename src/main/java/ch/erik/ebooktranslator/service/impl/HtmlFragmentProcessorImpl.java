@@ -1,7 +1,7 @@
 package ch.erik.ebooktranslator.service.impl;
 
+import ch.erik.ebooktranslator.service.HtmlFragmentProcessor;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
-import ch.erik.ebooktranslator.service.XmlFragmentProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.JDOMException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-public class HtmlFragmentProcessorImpl implements XmlFragmentProcessor {
+public class HtmlFragmentProcessorImpl implements HtmlFragmentProcessor {
 
     private static final String HTML_TAGS_CONTAINING_TEXT = "p, span, a, b, i, strong, em, br, h1, h2, h3, h4, h5, h6, " +
             "blockquote, q, code, pre, li, dt, dd, mark, ins, del, sup, sub, small";
@@ -25,7 +25,7 @@ public class HtmlFragmentProcessorImpl implements XmlFragmentProcessor {
 
     @Override
     public byte[] processHtmlFragment(final byte[] xmlFragment) throws JDOMException, IOException {
-        if(xmlFragment != null && xmlFragment.length > 0) {
+        if (xmlFragment != null && xmlFragment.length > 0) {
             final Document document = Jsoup.parse(new String(xmlFragment));
 
             document.title(this.translationLibraryClient.translate(document.title()));
