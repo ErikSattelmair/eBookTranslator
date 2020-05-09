@@ -51,7 +51,7 @@ public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryCli
             final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
             final List<TextNode> textNodes = elements.textNodes();
 
-            textNodes.stream().parallel()
+            textNodes.stream()
                     .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
                     .forEach(textNode -> translateText(browser, textNode.text()));
         }
