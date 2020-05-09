@@ -9,6 +9,7 @@ import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.epub.EpubWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class EBookFileTranslator implements EBookTranslator {
 
     @Autowired
+    @Qualifier("mymemory")
     private TranslationLibraryClient translationLibraryClient;
 
     @Override

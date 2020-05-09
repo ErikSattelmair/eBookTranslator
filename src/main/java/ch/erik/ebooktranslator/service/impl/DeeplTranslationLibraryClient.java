@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Service
+@Service("deepl")
 @Slf4j
 public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryClient implements TranslationLibraryClient {
 
