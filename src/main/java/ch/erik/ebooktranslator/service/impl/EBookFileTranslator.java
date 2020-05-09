@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class EBookFileTranslator implements EBookTranslator {
 
     @Autowired
-    @Qualifier("mymemory")
+    @Qualifier("deepl")
     private TranslationLibraryClient translationLibraryClient;
 
     @Override

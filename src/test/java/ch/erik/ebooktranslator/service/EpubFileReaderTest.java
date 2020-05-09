@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.service.impl.DeeplTranslationLibraryClient;
 import ch.erik.ebooktranslator.service.impl.EBookFileTranslator;
 import ch.erik.ebooktranslator.service.impl.MyMemoryTranslationLibraryClient;
 import org.junit.jupiter.api.DisplayName;
@@ -40,8 +41,14 @@ public class EpubFileReaderTest {
 
         @Bean
         @Qualifier("mymemory")
-        private TranslationLibraryClient translationLibraryClient() {
+        private TranslationLibraryClient translationLibraryClientMyMemory() {
             return new MyMemoryTranslationLibraryClient();
+        }
+
+        @Bean
+        @Qualifier("deepl")
+        private TranslationLibraryClient translationLibraryClientDeepL() {
+            return new DeeplTranslationLibraryClient();
         }
 
     }

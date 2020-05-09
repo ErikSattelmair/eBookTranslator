@@ -90,7 +90,7 @@ public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryCli
     private ExpectedCondition<Boolean> valueLoadedCondition() {
         return driver -> {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
