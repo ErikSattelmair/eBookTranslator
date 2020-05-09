@@ -45,7 +45,7 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
             final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
             final List<TextNode> textNodes = elements.textNodes();
 
-            textNodes.stream()
+            textNodes.stream().parallel()
                     .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
                     .forEach(textNode -> translateText(textNode.text()));
         }
