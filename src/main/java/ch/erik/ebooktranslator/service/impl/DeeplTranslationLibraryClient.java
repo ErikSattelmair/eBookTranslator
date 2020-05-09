@@ -30,9 +30,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryClient implements TranslationLibraryClient {
 
-    //private static final String DEEPL_URL = "https://www.deepl.com/translator";
-    private static final String DEEPL_URL = "https://www.whatsmyip.org/";
+    //private static final String DEEPL_URL = "https://www.whatsmyip.org/";
 
+    private static final String DEEPL_URL = "https://www.deepl.com/translator";
+    
     @Override
     public boolean translate(final List<Resource> textResources) throws IOException {
         final WebDriver browser = createBrowser();
