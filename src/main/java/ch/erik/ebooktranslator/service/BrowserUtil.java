@@ -18,10 +18,10 @@ public class BrowserUtil {
 
         // Set proxy
         final Proxy proxy = new Proxy();
-        final String proxyAddress = ProxyHelper.getRandomProxy();
-        proxy.setHttpProxy(proxyAddress);
-        proxy.setSslProxy(proxyAddress);
-        proxy.setFtpProxy(proxyAddress);
+        final String httpProxyAddress = ProxyHelper.getRandomHttpProxy();
+        final String httpsProxyAddress = ProxyHelper.getRandomHttpsProxy();
+        proxy.setHttpProxy(httpProxyAddress);
+        proxy.setSslProxy(httpsProxyAddress);
 
         final ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setCapability("proxy", proxy);

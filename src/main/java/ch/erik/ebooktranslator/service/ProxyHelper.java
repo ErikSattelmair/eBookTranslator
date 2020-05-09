@@ -10,11 +10,15 @@ import java.util.Random;
 public class ProxyHelper {
 
     private static final Random RANDOM = new Random();
-    private static List<String> PROXY_LIST;
+
+    private static List<String> HTTP_PROXY_LIST;
+
+    private static List<String> HTTPS_PROXY_LIST;
 
     static {
         try {
-            PROXY_LIST = Files.readAllLines(new ClassPathResource("proxies/proxy_list.txt").getFile().toPath());
+            HTTP_PROXY_LIST = Files.readAllLines(new ClassPathResource("proxies/http_proxy_list.txt").getFile().toPath());
+            HTTPS_PROXY_LIST = Files.readAllLines(new ClassPathResource("proxies/https_proxy_list.txt").getFile().toPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,8 +27,12 @@ public class ProxyHelper {
     private ProxyHelper() {
     }
 
-    public static String getRandomProxy() {
-        return PROXY_LIST.get(RANDOM.nextInt(PROXY_LIST.size()));
+    public static String getRandomHttpProxy() {
+        return HTTP_PROXY_LIST.get(RANDOM.nextInt(HTTP_PROXY_LIST.size()));
+    }
+
+    public static String getRandomHttpsProxy() {
+        return HTTPS_PROXY_LIST.get(RANDOM.nextInt(HTTPS_PROXY_LIST.size()));
     }
 
 }
