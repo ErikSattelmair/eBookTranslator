@@ -1,6 +1,6 @@
 package ch.erik.ebooktranslator.service.impl;
 
-import ch.erik.ebooktranslator.service.ProxyHelper;
+import ch.erik.ebooktranslator.service.ProxyUtil;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
 import ch.erik.ebooktranslator.service.UserAgent;
 import com.jayway.jsonpath.JsonPath;
@@ -45,7 +45,7 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
             final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
             final List<TextNode> textNodes = elements.textNodes();
 
-            textNodes.stream().parallel()
+            textNodes.stream()
                     .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
                     .forEach(textNode -> translateText(textNode.text()));
         }
@@ -61,10 +61,21 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
 
         log.debug("API endpoit: {}", uriComponents.toUriString());
 
-        final ResponseEntity<String> response = createProxiedRestTemplate().exchange(uriComponents.toUriString(), HttpMethod.GET, createHttpEntity(), String.class);
-        final String responseBody = response.getBody();
-        if (StringUtils.isNotBlank(responseBody)) {
-            return JsonPath.read(responseBody, "$.responseData.translatedText");
+        final int maxRetries = 20;
+        int retries = 0;
+
+        while (retries <= maxRetries) {
+            try {
+                final ResponseEntity<String> response = createProxiedRestTemplate().exchange(uriComponents.toUriString(), HttpMethod.GET, createHttpEntity(), String.class);
+                final String responseBody = response.getBody();
+                if (StringUtils.isNotBlank(responseBody)) {
+                    return JsonPath.read(responseBody, "$.responseData.translatedText");
+                }
+            } catch (Exception e) {
+                log.error("Could not perform request. Reason {}", e.getMessage());
+                log.debug("Retries left: {}", maxRetries - retries);
+                retries++;
+            }
         }
 
         throw new RuntimeException("Response is null");
@@ -73,9 +84,11 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
     private RestTemplate createProxiedRestTemplate() {
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
-        final String[] randomProxyParts = ProxyHelper.getRandomHttpsProxy().split(":");
+        final String[] randomProxyParts = ProxyUtil.getRandomHttpsProxy().split(":");
         final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(randomProxyParts[0], Integer.parseInt(randomProxyParts[1])));
         requestFactory.setProxy(proxy);
+
+        log.info("Using proxy {}", proxy.address());
 
         return new RestTemplate(requestFactory);
     }

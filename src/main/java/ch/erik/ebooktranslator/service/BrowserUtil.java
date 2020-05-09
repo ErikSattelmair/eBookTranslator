@@ -18,8 +18,8 @@ public class BrowserUtil {
 
         // Set proxy
         final Proxy proxy = new Proxy();
-        final String httpProxyAddress = ProxyHelper.getRandomHttpProxy();
-        final String httpsProxyAddress = ProxyHelper.getRandomHttpsProxy();
+        final String httpProxyAddress = ProxyUtil.getRandomHttpProxy();
+        final String httpsProxyAddress = ProxyUtil.getRandomHttpsProxy();
         proxy.setHttpProxy(httpProxyAddress);
         proxy.setSslProxy(httpsProxyAddress);
 

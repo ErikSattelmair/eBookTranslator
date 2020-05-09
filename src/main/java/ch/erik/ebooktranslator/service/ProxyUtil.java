@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 
-public class ProxyHelper {
+public class ProxyUtil {
 
     private static final Random RANDOM = new Random();
 
@@ -24,7 +24,7 @@ public class ProxyHelper {
         }
     }
 
-    private ProxyHelper() {
+    private ProxyUtil() {
     }
 
     public static String getRandomHttpProxy() {

@@ -62,17 +62,29 @@ public class DeeplTranslationLibraryClient extends AbstractTranslationLibraryCli
     }
 
     private String translateText(final WebDriver browser, final String text) {
-        final WebElement sourceTextArea = browser.findElement(By.className("lmt__source_textarea"));
-        sourceTextArea.sendKeys(text);
+        final int maxRetries = 10;
+        int retries = 0;
 
-        final WebDriverWait wait = new WebDriverWait(browser, 5);
-        wait.until(valueLoadedCondition());
+        while (retries <= maxRetries) {
+            try {
+                final WebElement sourceTextArea = browser.findElement(By.className("lmt__source_textarea"));
+                sourceTextArea.sendKeys(text);
 
-        final String translation = browser.findElement(By.className("lmt__target_textarea")).getAttribute("value");
-        sourceTextArea.clear();
+                final WebDriverWait wait = new WebDriverWait(browser, 5);
+                wait.until(valueLoadedCondition());
 
-        return translation;
+                final String translation = browser.findElement(By.className("lmt__target_textarea")).getAttribute("value");
+                sourceTextArea.clear();
 
+                return translation;
+            } catch (Exception e) {
+                log.error("Could not perform request. Reason {}", e.getMessage());
+                log.debug("Retries left: {}", maxRetries - retries);
+                retries++;
+            }
+        }
+
+        throw new RuntimeException("Could no read translation");
     }
 
     private ExpectedCondition<Boolean> valueLoadedCondition() {
