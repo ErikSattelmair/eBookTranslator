@@ -12,7 +12,7 @@ import java.nio.file.Files;
 @Slf4j
 public class EBookToFileSaveService implements EBookSaveService {
 
-    private static final String DEST_FOLDER_PATH = "/Users/erik/Downloads";
+    private static final String DEST_FOLDER_PATH = System.getProperty("user.home") + "/Downloads";
 
     @Override
     public void saveBook(final byte[] eBook) throws IOException {
@@ -20,6 +20,7 @@ public class EBookToFileSaveService implements EBookSaveService {
             throw new IllegalArgumentException("eBook must not be null!");
         }
 
-        Files.write(new File(DEST_FOLDER_PATH + "translated_book_" + System.currentTimeMillis() + ".epub").toPath(), eBook);
+        final File resultEbookFile = new File(DEST_FOLDER_PATH, "translated_book_" + System.currentTimeMillis() + ".epub");
+        Files.write(resultEbookFile.toPath(), eBook);
     }
 }
