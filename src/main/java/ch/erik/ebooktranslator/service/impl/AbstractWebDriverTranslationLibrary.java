@@ -3,6 +3,7 @@ package ch.erik.ebooktranslator.service.impl;
 import ch.erik.ebooktranslator.service.ProxyUtil;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.TextNode;
@@ -66,6 +67,7 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
             final int numberOfTextNodesLetters = textNodes.stream().map(textNode -> textNode.text().length()).mapToInt(Integer::intValue).sum();
             log.info("Numbers of textNodes letters to process: {}", numberOfTextNodesLetters);
             log.info("Numbers of texts to translate: {}", textsToTranslate.size());
+            log.info(StringUtils.repeat("-", 20) + "\n\n");
 
             if (numberOfLettersToProcessInTotal > 0) {
                 final List<String> translatedTexts = textsToTranslate.stream()
@@ -107,7 +109,11 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
     }
 
     private String translateText(final WebDriver browser, final String text) {
-        final int maxRetries = 10;
+        if (StringUtils.isBlank(text)) {
+            return text;
+        }
+
+        final int maxRetries = 20;
         int retries = 0;
 
         while (retries <= maxRetries) {
