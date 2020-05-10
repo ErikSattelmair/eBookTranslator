@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TranslationLibraryClient {
 
-    boolean translate(final List<Resource> textResources) throws IOException;
+    boolean translate(final List<Resource> textResources, final boolean useProxy) throws IOException;
 
 }

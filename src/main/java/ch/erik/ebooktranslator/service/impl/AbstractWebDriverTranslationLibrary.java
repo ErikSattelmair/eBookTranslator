@@ -1,29 +1,36 @@
 package ch.erik.ebooktranslator.service.impl;
 
-import ch.erik.ebooktranslator.service.BrowserUtil;
+import ch.erik.ebooktranslator.service.ProxyUtil;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractWebDriverTranslationLibrary extends AbstractTranslationLibraryClient {
 
+    private static final String DELIMITER = "\n\n";
+
     @Override
-    public boolean translate(final List<Resource> textResources) throws IOException {
-        final WebDriver browser = BrowserUtil.createBrowser();
+    public boolean translate(final List<Resource> textResources, final boolean useProxy) throws IOException {
+        final WebDriver browser = createBrowser(useProxy);
         browser.get(this.getUrl());
 
         final WebElement source = browser.findElement(By.id("source"));
@@ -38,14 +45,65 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
             final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
             final List<TextNode> textNodes = elements.textNodes();
 
-            textNodes.stream()
-                    .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
-                    .forEach(textNode -> translateText(browser, textNode.text()));
+            final List<String> textsToTranslate = new ArrayList<>();
+            final StringBuilder stringBuilder = new StringBuilder();
+
+            for (final TextNode textNode : textNodes) {
+                if (stringBuilder.length() + textNode.text().length() + DELIMITER.length() <= getMaxFragmentSize()) {
+                    stringBuilder.append(textNode.text()).append(DELIMITER);
+                } else {
+                    textsToTranslate.add(stringBuilder.toString());
+                    stringBuilder.setLength(0);
+                }
+            }
+
+            textsToTranslate.add(stringBuilder.toString());
+
+            final int numberOfLettersToProcessInTotal = textsToTranslate.stream().map(String::length).mapToInt(Integer::intValue).sum();
+            log.info("Numbers of letters to process in total: {}", numberOfLettersToProcessInTotal);
+            log.info("Numbers of textNodes to process: {}", textNodes.size());
+
+            final int numberOfTextNodesLetters = textNodes.stream().map(textNode -> textNode.text().length()).mapToInt(Integer::intValue).sum();
+            log.info("Numbers of textNodes letters to process: {}", numberOfTextNodesLetters);
+            log.info("Numbers of texts to translate: {}", textsToTranslate.size());
+
+            if (numberOfLettersToProcessInTotal > 0) {
+                final List<String> translatedTexts = textsToTranslate.stream()
+                        .map(text -> translateText(browser, text))
+                        .collect(Collectors.toList());
+
+                final String[] translatedJoinedTextsParts = String.join(DELIMITER, translatedTexts).split(DELIMITER);
+
+                for (int i = 0; i < translatedJoinedTextsParts.length; i++) {
+                    final TextNode textNode = textNodes.get(i);
+                    textNode.text(translatedTexts.get(0));
+                }
+            }
         }
 
         browser.close();
 
         return true;
+    }
+
+    private WebDriver createBrowser(final boolean useProxy) throws IOException {
+        System.setProperty("webdriver.chrome.driver", new ClassPathResource("driver/chromedriver").getFile().getPath());
+
+        final ChromeOptions chromeOptions = new ChromeOptions();
+
+        if (useProxy) {
+            final Proxy proxy = new Proxy();
+            final String httpProxyAddress = ProxyUtil.getRandomHttpProxy();
+            final String httpsProxyAddress = ProxyUtil.getRandomHttpsProxy();
+            proxy.setHttpProxy(httpProxyAddress);
+            proxy.setSslProxy(httpsProxyAddress);
+
+            log.info("Using http proxy {}", httpProxyAddress);
+            log.info("Using https proxy {}", httpsProxyAddress);
+            chromeOptions.setCapability("proxy", proxy);
+        }
+
+        return new ChromeDriver(chromeOptions);
     }
 
     private String translateText(final WebDriver browser, final String text) {
@@ -87,6 +145,8 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
     }
 
     protected abstract String getUrl();
+
+    protected abstract int getMaxFragmentSize();
 
     protected abstract String getSourceWebElementClass();
 

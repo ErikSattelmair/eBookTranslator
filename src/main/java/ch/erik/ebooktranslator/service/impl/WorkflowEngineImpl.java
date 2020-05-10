@@ -26,7 +26,7 @@ public class WorkflowEngineImpl implements WorkflowEngine {
     private EBookSaveService eBookSaveService;
 
     @Override
-    public void startWorkflow() throws Exception, TranslationException {
+    public void startWorkflow(final boolean useProxy) throws Exception, TranslationException {
         log.info("Start processing...");
 
         final StopWatch stopWatch = new StopWatch();
@@ -41,7 +41,7 @@ public class WorkflowEngineImpl implements WorkflowEngine {
         log.info("E-Book fetched");
 
         log.info("Translating E-Book...");
-        final byte[] translatedEbook = this.eBookTranslator.translateEBook(eBook);
+        final byte[] translatedEbook = this.eBookTranslator.translateEBook(eBook, useProxy);
         log.info("Translation done");
 
         log.info("Saving E-Book...");

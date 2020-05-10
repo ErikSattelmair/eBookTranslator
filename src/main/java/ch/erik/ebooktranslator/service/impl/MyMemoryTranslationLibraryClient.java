@@ -35,25 +35,25 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
     // private static final String MY_MEMORY_URL = "https://www.whatsmyip.org";
 
     @Override
-    public boolean translate(final List<Resource> textResources) throws IOException {
+    public boolean translate(final List<Resource> textResources, final boolean useProxy) throws IOException {
         for (final Resource textResource : textResources) {
             final byte[] resourceContent = textResource.getData();
             final Document document = Jsoup.parse(new String(resourceContent));
 
-            document.title(translateText(document.title()));
+            document.title(translateText(document.title(), useProxy));
 
             final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
             final List<TextNode> textNodes = elements.textNodes();
 
             textNodes.stream().parallel()
                     .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
-                    .forEach(textNode -> translateText(textNode.text()));
+                    .forEach(textNode -> translateText(textNode.text(), useProxy));
         }
 
         return true;
     }
 
-    private String translateText(final String text) {
+    private String translateText(final String text, final boolean usProxy) {
         final UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(MY_MEMORY_URL)
                 .queryParam("q", text)
                 .queryParam("langpair", "en|it")
@@ -66,7 +66,7 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
 
         while (retries <= maxRetries) {
             try {
-                final ResponseEntity<String> response = createProxiedRestTemplate().exchange(uriComponents.toUriString(), HttpMethod.GET, createHttpEntity(), String.class);
+                final ResponseEntity<String> response = createProxiedRestTemplate(usProxy).exchange(uriComponents.toUriString(), HttpMethod.GET, createHttpEntity(), String.class);
                 final String responseBody = response.getBody();
                 if (StringUtils.isNotBlank(responseBody)) {
                     return JsonPath.read(responseBody, "$.responseData.translatedText");
@@ -81,14 +81,16 @@ public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibrary
         throw new RuntimeException("Response is null");
     }
 
-    private RestTemplate createProxiedRestTemplate() {
+    private RestTemplate createProxiedRestTemplate(final boolean usProxy) {
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
-        final String[] randomProxyParts = ProxyUtil.getRandomHttpsProxy().split(":");
-        final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(randomProxyParts[0], Integer.parseInt(randomProxyParts[1])));
-        requestFactory.setProxy(proxy);
+        if (usProxy) {
+            final String[] randomProxyParts = ProxyUtil.getRandomHttpsProxy().split(":");
+            final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(randomProxyParts[0], Integer.parseInt(randomProxyParts[1])));
+            requestFactory.setProxy(proxy);
 
-        log.info("Using proxy {}", proxy.address());
+            log.info("Using proxy {}", proxy.address());
+        }
 
         return new RestTemplate(requestFactory);
     }

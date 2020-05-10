@@ -28,8 +28,8 @@ public class EBookFileTranslator implements EBookTranslator {
     private TranslationLibraryClient translationLibraryClient;
 
     @Override
-    public byte[] translateEBook(final byte[] source) throws TranslationException {
-        if(source != null) {
+    public byte[] translateEBook(final byte[] source, final boolean useProxy) throws TranslationException {
+        if (source != null) {
             final EpubReader epubReader = new nl.siegmann.epublib.epub.EpubReader();
 
             try {
@@ -38,7 +38,7 @@ public class EBookFileTranslator implements EBookTranslator {
                 final List<Resource> resources = book.getContents();
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
-                this.translationLibraryClient.translate(textResources);
+                this.translationLibraryClient.translate(textResources, useProxy);
 
                 inputStream.close();
 

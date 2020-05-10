@@ -4,6 +4,6 @@ import ch.erik.ebooktranslator.exception.TranslationException;
 
 public interface WorkflowEngine {
 
-    void startWorkflow() throws Exception, TranslationException;
+    void startWorkflow(final boolean useProxy) throws Exception, TranslationException;
 
 }

@@ -25,4 +25,9 @@ public class DeeplTranslationLibraryClient extends AbstractWebDriverTranslationL
     protected String getUrl() {
         return DEEPL_URL;
     }
+
+    @Override
+    protected int getMaxFragmentSize() {
+        return 5_000;
+    }
 }

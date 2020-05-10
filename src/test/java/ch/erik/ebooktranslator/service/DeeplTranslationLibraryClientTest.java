@@ -33,7 +33,7 @@ public class DeeplTranslationLibraryClientTest {
         final Book book = epubReader.readEpub(new FileInputStream(new ClassPathResource("").getFile()));
         final List<Resource> textResources = book.getContents().stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
-        Assertions.assertTrue(this.translationLibraryClient.translate(textResources));
+        Assertions.assertTrue(this.translationLibraryClient.translate(textResources, false));
     }
 
     public static class Configuration {

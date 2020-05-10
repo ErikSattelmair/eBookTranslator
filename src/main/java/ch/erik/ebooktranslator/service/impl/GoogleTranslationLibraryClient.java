@@ -23,4 +23,9 @@ public class GoogleTranslationLibraryClient extends AbstractWebDriverTranslation
     protected String getUrl() {
         return GOOGLE_TRANSLATOR_URL;
     }
+
+    @Override
+    protected int getMaxFragmentSize() {
+        return 5_000;
+    }
 }

@@ -12,7 +12,7 @@ public class Application {
         final AbstractApplicationContext abstractApplicationContext = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         final WorkflowEngine workflowEngine = abstractApplicationContext.getBean(WorkflowEngine.class);
 
-        workflowEngine.startWorkflow();
+        workflowEngine.startWorkflow(Boolean.TRUE.equals(Boolean.valueOf(args[0])));
 
         abstractApplicationContext.close();
     }
