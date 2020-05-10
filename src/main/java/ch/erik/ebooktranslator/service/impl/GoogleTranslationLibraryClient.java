@@ -16,7 +16,7 @@ public class GoogleTranslationLibraryClient extends AbstractWebDriverTranslation
 
     @Override
     protected String getTargetWebElementClass() {
-        return "//span[@class='tlid-translation translation']/span";
+        return "//span[@class='tlid-translation translation']";
     }
 
     @Override

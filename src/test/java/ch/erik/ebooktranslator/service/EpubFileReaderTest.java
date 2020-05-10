@@ -22,7 +22,7 @@ import java.nio.file.Files;
 @ContextConfiguration(classes = EpubFileReaderTest.Configuration.class)
 public class EpubFileReaderTest {
 
-    private static final String EPUB_FILE_PATH = "epub/resource1.epub";
+    private static final String EPUB_FILE_PATH = "epub/resource.epub";
 
     @Autowired
     private EBookTranslator eBookTranslator;

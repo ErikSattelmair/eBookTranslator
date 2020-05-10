@@ -56,9 +56,11 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
             try {
                 final WebElement sourceTextArea = browser.findElement(By.xpath(getSourceWebElementClass()));
                 sourceTextArea.clear();
-                sourceTextArea.sendKeys(text);
 
                 final WebDriverWait wait = new WebDriverWait(browser, 5);
+                wait.until(valueLoadedCondition());
+                sourceTextArea.sendKeys(text);
+
                 wait.until(valueLoadedCondition());
 
                 return browser.findElement(By.xpath(getTargetWebElementClass())).getText();
@@ -75,7 +77,7 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
     private ExpectedCondition<Boolean> valueLoadedCondition() {
         return driver -> {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
