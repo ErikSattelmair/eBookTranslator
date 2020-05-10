@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,19 +25,26 @@ public class EBookFileTranslator implements EBookTranslator {
     private TranslationLibraryClient translationLibraryClient;
 
     @Override
-    public byte[] translateEBook(final byte[] source, final boolean useProxy) throws TranslationException {
+    public byte[] translateEBook(final byte[] source, final String coverImageFilePath, final boolean useProxy) throws TranslationException {
         if (source != null) {
             final EpubReader epubReader = new nl.siegmann.epublib.epub.EpubReader();
 
             try {
                 final InputStream inputStream = new ByteArrayInputStream(source);
                 final Book book = epubReader.readEpub(inputStream);
+
+                inputStream.close();
+
                 final List<Resource> resources = book.getContents();
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
+                // translate content
                 this.translationLibraryClient.translate(textResources, useProxy);
 
-                inputStream.close();
+                // Add new cover image
+                final String[] filePathSegments = coverImageFilePath.split(File.pathSeparator);
+                final String fileName = filePathSegments[filePathSegments.length - 1];
+                book.setCoverImage(new Resource(new FileInputStream(new File(coverImageFilePath)), fileName));
 
                 final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 final EpubWriter epubWriter = new EpubWriter();

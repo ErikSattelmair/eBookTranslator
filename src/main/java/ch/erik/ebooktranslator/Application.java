@@ -12,7 +12,10 @@ public class Application {
         final AbstractApplicationContext abstractApplicationContext = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         final WorkflowEngine workflowEngine = abstractApplicationContext.getBean(WorkflowEngine.class);
 
-        workflowEngine.startWorkflow(Boolean.TRUE.equals(Boolean.valueOf(args[0])));
+        final String coverImageFilePath = args[0];
+        final boolean useProxy = Boolean.TRUE.equals(Boolean.valueOf(args[1]));
+
+        workflowEngine.startWorkflow(coverImageFilePath, useProxy);
 
         abstractApplicationContext.close();
     }

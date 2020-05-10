@@ -33,7 +33,7 @@ public class EpubFileReaderTest {
     @Test
     @DisplayName("Test")
     public void testEpubFileReader() throws TranslationException, IOException {
-        final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()), false);
+        final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()), "", false);
         Files.write(new File(DEST_FOLDER_PATH + "translated_book_" + System.currentTimeMillis() + ".epub").toPath(), res);
     }
 
