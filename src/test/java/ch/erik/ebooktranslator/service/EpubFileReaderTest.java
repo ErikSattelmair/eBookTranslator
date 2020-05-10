@@ -15,12 +15,15 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = EpubFileReaderTest.Configuration.class)
 public class EpubFileReaderTest {
+
+    private static final String DEST_FOLDER_PATH = "/Users/erik/Downloads";
 
     private static final String EPUB_FILE_PATH = "epub/resource.epub";
 
@@ -30,7 +33,8 @@ public class EpubFileReaderTest {
     @Test
     @DisplayName("Test")
     public void testEpubFileReader() throws TranslationException, IOException {
-        this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()));
+        final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()));
+        Files.write(new File(DEST_FOLDER_PATH + "translated_book_" + System.currentTimeMillis() + ".epub").toPath(), res);
     }
 
     public static class Configuration {
