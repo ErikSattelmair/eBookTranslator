@@ -1,10 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
-import ch.erik.ebooktranslator.service.impl.DeeplTranslationLibraryClient;
-import ch.erik.ebooktranslator.service.impl.EBookFileTranslator;
-import ch.erik.ebooktranslator.service.impl.GoogleTranslationLibraryClient;
-import ch.erik.ebooktranslator.service.impl.MyMemoryTranslationLibraryClient;
+import ch.erik.ebooktranslator.service.impl.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +12,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -30,16 +26,14 @@ public class EpubFileReaderTest {
     @Autowired
     private EBookTranslator eBookTranslator;
 
+    @Autowired
+    private EBookSaveService eBookSaveService;
+
     @Test
     @DisplayName("Test")
     public void testEpubFileReader() throws TranslationException, IOException {
-        //final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()), "", false);
-        //Files.write(new File(DEST_FOLDER_PATH + "translated_book_" + System.currentTimeMillis() + ".epub").toPath(), res);
-
-        final File result = new File(DEST_FOLDER_PATH, "translated_book_" + System.currentTimeMillis() + ".epub");
-        System.out.println(result.createNewFile());
-        Files.write(result.toPath(), Files.readAllBytes(new ClassPathResource("epub/resource.epub").getFile().toPath()));
-        System.out.println();
+        final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()), "", false);
+        this.eBookSaveService.saveBook(res);
     }
 
     public static class Configuration {
@@ -51,20 +45,25 @@ public class EpubFileReaderTest {
 
         @Bean
         @Qualifier("mymemory")
-        private TranslationLibraryClient translationLibraryClientMyMemory() {
+        public TranslationLibraryClient translationLibraryClientMyMemory() {
             return new MyMemoryTranslationLibraryClient();
         }
 
         @Bean
         @Qualifier("deepl")
-        private TranslationLibraryClient translationLibraryClientDeepL() {
+        public TranslationLibraryClient translationLibraryClientDeepL() {
             return new DeeplTranslationLibraryClient();
         }
 
         @Bean
         @Qualifier("google")
-        private TranslationLibraryClient translationLibraryClientGoogle() {
+        public TranslationLibraryClient translationLibraryClientGoogle() {
             return new GoogleTranslationLibraryClient();
+        }
+
+        @Bean
+        public EBookSaveService eBookSaveService() {
+            return new EBookToFileSaveService();
         }
 
     }

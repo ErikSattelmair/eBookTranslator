@@ -4,8 +4,7 @@ import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.service.EBookTranslator;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
 import lombok.extern.slf4j.Slf4j;
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.domain.*;
 import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.epub.EpubWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,11 @@ public class EBookFileTranslator implements EBookTranslator {
 
                 inputStream.close();
 
+                final TableOfContents tableOfContents = book.getTableOfContents();
+                final List<TOCReference> tocReferences = tableOfContents.getTocReferences();
+                final List<Resource> tocReferenceResources = tocReferences.stream().map(ResourceReference::getResource).collect(Collectors.toList());
+                this.translationLibraryClient.translate(tocReferenceResources, useProxy);
+
                 final List<Resource> resources = book.getContents();
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
@@ -46,12 +50,7 @@ public class EBookFileTranslator implements EBookTranslator {
                 final String fileName = filePathSegments[filePathSegments.length - 1];
                 book.setCoverImage(new Resource(new FileInputStream(new File(coverImageFilePath)), fileName));
 
-                final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                final EpubWriter epubWriter = new EpubWriter();
-                epubWriter.write(book, outputStream);
-                outputStream.close();
-
-                return outputStream.toByteArray();
+                return getContentOfTranslatedEbook(book);
             } catch (IOException e) {
                 throw new TranslationException(e.getMessage(), e);
             }
@@ -59,5 +58,13 @@ public class EBookFileTranslator implements EBookTranslator {
         }
 
         throw new IllegalArgumentException("source must not be null");
+    }
+
+    private byte[] getContentOfTranslatedEbook(Book book) throws IOException {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final EpubWriter epubWriter = new EpubWriter();
+        epubWriter.write(book, outputStream);
+
+        return outputStream.toByteArray();
     }
 }
