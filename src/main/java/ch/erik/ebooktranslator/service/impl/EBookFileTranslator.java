@@ -3,25 +3,21 @@ package ch.erik.ebooktranslator.service.impl;
 import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.service.EBookTranslator;
 import ch.erik.ebooktranslator.service.TranslationLibraryClient;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.*;
 import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.epub.EpubWriter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
+@AllArgsConstructor
 public class EBookFileTranslator implements EBookTranslator {
 
-    @Autowired
-    @Qualifier("google")
-    private TranslationLibraryClient translationLibraryClient;
+    private final TranslationLibraryClient translationLibraryClient;
 
     @Override
     public byte[] translateEBook(final byte[] source, final String coverImageFilePath, final boolean useProxy) throws TranslationException {

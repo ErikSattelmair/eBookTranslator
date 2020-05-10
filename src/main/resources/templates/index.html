@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Translation Control Panel</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="post" th:action="@{/}" th:object="${translationRequestModel}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="cover-image-file-path">Cover Image File Path</label>
+                        <input class="form-control" id="cover-image-file-path" placeholder="Cover Image File Path"
+                               th:field="*{coverImageFilePath}" type="text">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="use-proxy">Use Random Proxy</label>
+                        <input class="form-control" id="use-proxy" th:field="*{useProxy}" type="checkbox">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="use-deepl">Use DeepL</label>
+                        <input class="form-control" id="use-deepl" th:field="*{useDeepl}" type="checkbox">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="use-google">Use Google</label>
+                        <input class="form-control" id="use-google" th:field="*{useGoogle}" type="checkbox">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="use-my-memory">Use MyMemory</label>
+                        <input class="form-control" id="use-my-memory" th:field="*{useMyMemory}" type="checkbox">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="use-ebook-from-disk">Use E-Book From Disk</label>
+                        <input class="form-control" id="use-ebook-from-disk" th:field="*{useEbookFileFromDisk}"
+                               type="checkbox">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="ebook-file-path">E-Book File Path</label>
+                        <input class="form-control" id="ebook-file-path" placeholder="E-Book File Path"
+                               th:field="*{ebookFilePath}" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Start translation">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

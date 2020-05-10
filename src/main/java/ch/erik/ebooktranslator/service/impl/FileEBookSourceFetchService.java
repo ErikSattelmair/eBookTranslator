@@ -19,15 +19,15 @@ public class FileEBookSourceFetchService implements EBookSourceFetchService {
         final GenericExtFilter filter = new GenericExtFilter(RELEVANT_FILE_EXTENSION);
         final File downloadDirectory = new File(directoryPath);
 
-        if(!downloadDirectory.isDirectory()){
+        if (!downloadDirectory.isDirectory()) {
             throw new Exception("Directory does not exists :" + directoryPath);
         }
 
         // list out all the file name and filter by the extension
         final String[] list = downloadDirectory.list(filter);
 
-        if (list == null || list.length != 1) {
-            throw new Exception("No files end with " + RELEVANT_FILE_EXTENSION + "in directory " + directoryPath);
+        if (list == null || list.length == 0) {
+            throw new Exception("No files end with " + RELEVANT_FILE_EXTENSION + " in directory " + directoryPath);
         }
 
         final File ebookFile = new File(directoryPath + File.separator + list[0]);

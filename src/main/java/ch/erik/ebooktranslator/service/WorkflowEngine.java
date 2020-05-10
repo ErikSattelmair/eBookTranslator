@@ -1,9 +1,9 @@
 package ch.erik.ebooktranslator.service;
 
-import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.model.TranslationRequestModel;
 
 public interface WorkflowEngine {
 
-    void startWorkflow(final String coverImageFilePath, final boolean useProxy) throws Exception, TranslationException;
+    boolean startWorkflow(final TranslationRequestModel translationRequestModel);
 
 }

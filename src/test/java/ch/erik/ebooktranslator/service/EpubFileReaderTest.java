@@ -40,7 +40,7 @@ public class EpubFileReaderTest {
 
         @Bean
         public EBookTranslator eBookTranslator() {
-            return new EBookFileTranslator();
+            return new EBookFileTranslator(new DeeplTranslationLibraryClient());
         }
 
         @Bean
