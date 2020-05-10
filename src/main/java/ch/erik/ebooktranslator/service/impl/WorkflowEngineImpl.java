@@ -29,6 +29,9 @@ public class WorkflowEngineImpl implements WorkflowEngine {
     @Autowired
     private EBookSaveService eBookSaveService;
 
+    @Autowired
+    private MailService mailService;
+
     @Override
     public boolean startWorkflow(final TranslationRequestModel translationRequestModel) {
         log.info("Start processing...");
@@ -77,6 +80,10 @@ public class WorkflowEngineImpl implements WorkflowEngine {
             log.info("Saving E-Book...");
             this.eBookSaveService.saveBook(translatedEbook);
             log.info("E-Book saved");
+
+            log.info("Send E-Book via mail to Steffen and me...");
+            final boolean emailSendingResult = this.mailService.sendMail(translatedEbook);
+            log.info(emailSendingResult ? "E-Mail send successfully" : "E-Mail could not be sent");
 
             stopWatch.stop();
             log.info("Processing took " + stopWatch.getTime() + " seconds.");

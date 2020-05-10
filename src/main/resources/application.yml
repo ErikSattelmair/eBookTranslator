@@ -1,0 +1,21 @@
+mail:
+  recipient:
+  recipient-bcc: erik.sattelmair@gmx.com
+  subject: Translated Book
+  text: Hallo Steffen, im Anhang findest du ein übersetztes E-Book
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: eriksattelmair@gmail.com
+    password: wrtslixxoerscowx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
