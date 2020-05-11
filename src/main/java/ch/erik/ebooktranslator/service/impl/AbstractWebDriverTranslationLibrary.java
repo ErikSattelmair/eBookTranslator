@@ -145,7 +145,7 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
             try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.warn("Could not put thread to sleep");
             }
 
             return true;
