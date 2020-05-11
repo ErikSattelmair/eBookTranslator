@@ -50,11 +50,13 @@ public abstract class AbstractWebDriverTranslationLibrary extends AbstractTransl
             final StringBuilder stringBuilder = new StringBuilder();
 
             for (final TextNode textNode : textNodes) {
-                if (stringBuilder.length() + textNode.text().length() + DELIMITER.length() <= getMaxFragmentSize()) {
-                    stringBuilder.append(textNode.text()).append(DELIMITER);
+                final String textNodeText = textNode.text();
+                if (stringBuilder.length() + textNodeText.length() + DELIMITER.length() <= getMaxFragmentSize()) {
+                    stringBuilder.append(textNodeText).append(DELIMITER);
                 } else {
                     textsToTranslate.add(stringBuilder.toString());
                     stringBuilder.setLength(0);
+                    stringBuilder.append(textNodeText).append(DELIMITER);
                 }
             }
 
