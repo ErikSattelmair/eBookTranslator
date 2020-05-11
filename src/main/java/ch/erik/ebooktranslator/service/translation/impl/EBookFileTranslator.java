@@ -1,8 +1,8 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
-import ch.erik.ebooktranslator.service.EBookTranslator;
-import ch.erik.ebooktranslator.service.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.EBookTranslator;
+import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.*;

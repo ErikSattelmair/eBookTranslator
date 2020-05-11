@@ -1,6 +1,6 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl;
 
-import ch.erik.ebooktranslator.service.EBookSaveService;
+import ch.erik.ebooktranslator.service.translation.EBookSaveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

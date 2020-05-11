@@ -1,11 +1,11 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service("deepl")
 @Slf4j
-public class DeeplTranslationLibraryClient extends AbstractWebDriverTranslationLibrary {
+public class DeeplTranslationEngineClient extends AbstractWebDriverTranslationEngine {
 
     //private static final String DEEPL_URL = "https://www.whatsmyip.org/";
 

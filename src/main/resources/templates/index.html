@@ -57,6 +57,17 @@
                         <input class="btn btn-primary" type="submit" value="Start translation">
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <span th:if="${requestInvalid}">Request parameters are invalid</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <span th:if="${translationSuccessful}">Translation successful</span>
+                        <span th:unless="${translationSuccessful}">Translation not successful. Please try again</span>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

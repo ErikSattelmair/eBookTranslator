@@ -1,6 +1,6 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl;
 
-import ch.erik.ebooktranslator.service.EBookLibraryClient;
+import ch.erik.ebooktranslator.service.translation.EBookLibraryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

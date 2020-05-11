@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
-import ch.erik.ebooktranslator.service.impl.DeeplTranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplTranslationEngineClient;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
@@ -40,7 +41,7 @@ public class DeeplTranslationLibraryClientTest {
 
         @Bean
         public TranslationLibraryClient translationLibraryClient() {
-            return new DeeplTranslationLibraryClient();
+            return new DeeplTranslationEngineClient();
         }
 
     }

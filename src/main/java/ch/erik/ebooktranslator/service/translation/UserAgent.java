@@ -1,4 +1,4 @@
-package ch.erik.ebooktranslator.service;
+package ch.erik.ebooktranslator.service.translation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

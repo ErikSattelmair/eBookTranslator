@@ -1,6 +1,6 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
-import ch.erik.ebooktranslator.service.ProxyUtil;
+import ch.erik.ebooktranslator.service.translation.ProxyUtil;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractWebDriverTranslationLibrary extends AbstractTranslationLibraryClient {
+public abstract class AbstractWebDriverTranslationEngine extends AbstractTranslationEngineClient {
 
     private static final String DELIMITER = "\n\n";
 

@@ -1,7 +1,14 @@
 package ch.erik.ebooktranslator.service;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
-import ch.erik.ebooktranslator.service.impl.*;
+import ch.erik.ebooktranslator.service.translation.EBookSaveService;
+import ch.erik.ebooktranslator.service.translation.EBookTranslator;
+import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.impl.EBookFileTranslator;
+import ch.erik.ebooktranslator.service.translation.impl.EBookToFileSaveService;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplTranslationEngineClient;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.GoogleTranslationEngineClient;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.MyMemoryTranslationEngineClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,25 +47,25 @@ public class EpubFileReaderTest {
 
         @Bean
         public EBookTranslator eBookTranslator() {
-            return new EBookFileTranslator(new DeeplTranslationLibraryClient());
+            return new EBookFileTranslator(new DeeplTranslationEngineClient());
         }
 
         @Bean
         @Qualifier("mymemory")
         public TranslationLibraryClient translationLibraryClientMyMemory() {
-            return new MyMemoryTranslationLibraryClient();
+            return new MyMemoryTranslationEngineClient();
         }
 
         @Bean
         @Qualifier("deepl")
         public TranslationLibraryClient translationLibraryClientDeepL() {
-            return new DeeplTranslationLibraryClient();
+            return new DeeplTranslationEngineClient();
         }
 
         @Bean
         @Qualifier("google")
         public TranslationLibraryClient translationLibraryClientGoogle() {
-            return new GoogleTranslationLibraryClient();
+            return new GoogleTranslationEngineClient();
         }
 
         @Bean

@@ -1,12 +1,12 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
-import ch.erik.ebooktranslator.service.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class AbstractTranslationLibraryClient implements TranslationLibraryClient {
+public abstract class AbstractTranslationEngineClient implements TranslationLibraryClient {
 
     protected static final String HTML_TAGS_CONTAINING_TEXT = "p, span, a, b, i, strong, em, br, h1, h2, h3, h4, h5, h6, " +
             "blockquote, q, code, pre, li, dt, dd, mark, ins, del, sup, sub, small";

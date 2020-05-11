@@ -1,8 +1,11 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
 import ch.erik.ebooktranslator.model.TranslationRequestModel;
-import ch.erik.ebooktranslator.service.*;
+import ch.erik.ebooktranslator.service.translation.*;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplTranslationEngineClient;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.GoogleTranslationEngineClient;
+import ch.erik.ebooktranslator.service.translation.impl.translationengine.MyMemoryTranslationEngineClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,6 @@ import java.nio.file.Files;
 public class WorkflowEngineImpl implements WorkflowEngine {
 
     private static final String DOWNLOAD_FOLDER = "/Users/erik/Downloads";
-
-    @Autowired
-    private ParameterValidator parameterValidator;
 
     @Autowired
     private EBookLibraryClient eBookLibraryClient;
@@ -38,18 +38,6 @@ public class WorkflowEngineImpl implements WorkflowEngine {
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
-        final String ebookCoverImage = translationRequestModel.getCoverImageFilePath();
-
-        log.info("Validate cover image file path...");
-        final boolean isCoverImageFilePathValid = this.parameterValidator.isCoverImageFilePathValid(ebookCoverImage);
-        log.info("Validation done. Cover image file path is {}", isCoverImageFilePathValid);
-
-        final boolean isEbookFilePathValid = this.parameterValidator.isEbookFilePathValid(translationRequestModel.isUseEbookFileFromDisk(), translationRequestModel.getEbookFilePath());
-        if (!isCoverImageFilePathValid || !isEbookFilePathValid) {
-            log.error("Input parameter not valid!");
-            return false;
-        }
 
         final boolean useEbookOnDisk = translationRequestModel.isUseEbookFileFromDisk();
         byte[] eBook;
@@ -74,6 +62,7 @@ public class WorkflowEngineImpl implements WorkflowEngine {
             log.info("Translating E-Book...");
             final EBookTranslator eBookTranslator = new EBookFileTranslator(getTranslationEngine(translationRequestModel));
             final boolean useProxy = translationRequestModel.isUseProxy();
+            final String ebookCoverImage = translationRequestModel.getCoverImageFilePath();
             final byte[] translatedEbook = eBookTranslator.translateEBook(eBook, ebookCoverImage, useProxy);
             log.info("Translation done");
 
@@ -100,11 +89,11 @@ public class WorkflowEngineImpl implements WorkflowEngine {
 
     private TranslationLibraryClient getTranslationEngine(final TranslationRequestModel translationRequestModel) {
         if (translationRequestModel.isUseDeepl()) {
-            return new DeeplTranslationLibraryClient();
+            return new DeeplTranslationEngineClient();
         } else if (translationRequestModel.isUseGoogle()) {
-            return new GoogleTranslationLibraryClient();
+            return new GoogleTranslationEngineClient();
         } else {
-            return new MyMemoryTranslationLibraryClient();
+            return new MyMemoryTranslationEngineClient();
         }
     }
 }

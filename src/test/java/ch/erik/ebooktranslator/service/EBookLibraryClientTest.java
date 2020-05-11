@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
-import ch.erik.ebooktranslator.service.impl.EBookLibraryClientImpl;
+import ch.erik.ebooktranslator.service.translation.EBookLibraryClient;
+import ch.erik.ebooktranslator.service.translation.impl.EBookLibraryClientImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ import java.io.IOException;
 public class EBookLibraryClientTest {
 
     @Autowired
-    private EBookLibraryClient EBookLibraryClient;
+    private ch.erik.ebooktranslator.service.translation.EBookLibraryClient EBookLibraryClient;
 
     @Test
     @DisplayName("")

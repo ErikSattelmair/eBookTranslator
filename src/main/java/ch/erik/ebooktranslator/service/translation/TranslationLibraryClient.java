@@ -1,4 +1,4 @@
-package ch.erik.ebooktranslator.service;
+package ch.erik.ebooktranslator.service.translation;
 
 import nl.siegmann.epublib.domain.Resource;
 

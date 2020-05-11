@@ -1,7 +1,8 @@
 package ch.erik.ebooktranslator.controller;
 
+import ch.erik.ebooktranslator.model.TranslationProcessingModel;
 import ch.erik.ebooktranslator.model.TranslationRequestModel;
-import ch.erik.ebooktranslator.service.WorkflowEngine;
+import ch.erik.ebooktranslator.service.translation.WorkflowEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,17 +31,25 @@ public class TranslationController {
                                final BindingResult bindingResult,
                                final Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("requestInvalid", true);
             return "index";
         }
 
         final boolean translationSuccessful = this.workflowEngine.startWorkflow(translationRequestModel);
         if (!translationSuccessful) {
+            model.addAttribute("translationSuccessful", false);
             return "index";
         }
 
-        model.addAttribute("translationSuccessful", translationSuccessful);
+        model.addAttribute("translationSuccessful", true);
 
-        return "result";
+        return "index";
+    }
+
+    @GetMapping("/processing-tool")
+    public String showTranslationProcessingPage(final Model model) {
+        model.addAttribute("translationProcessingModel", new TranslationProcessingModel());
+        return "processing-tool";
     }
 
 }

@@ -1,15 +1,13 @@
 package ch.erik.ebooktranslator.model;
 
+import ch.erik.ebooktranslator.validation.CoverImageFilePath;
+import ch.erik.ebooktranslator.validation.EbookFilePath;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Data
 public class TranslationRequestModel {
 
-    @NotEmpty
-    @NotBlank
+    @CoverImageFilePath
     private String coverImageFilePath;
 
     private boolean useProxy;
@@ -24,6 +22,7 @@ public class TranslationRequestModel {
 
     private boolean useEbookFileFromDisk;
 
+    @EbookFilePath
     private String ebookFilePath;
 
 }

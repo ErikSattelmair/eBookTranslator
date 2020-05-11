@@ -1,8 +1,8 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
-import ch.erik.ebooktranslator.service.ProxyUtil;
-import ch.erik.ebooktranslator.service.TranslationLibraryClient;
-import ch.erik.ebooktranslator.service.UserAgent;
+import ch.erik.ebooktranslator.service.translation.ProxyUtil;
+import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
+import ch.erik.ebooktranslator.service.translation.UserAgent;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
@@ -28,7 +28,7 @@ import java.util.List;
 
 @Service("mymemory")
 @Slf4j
-public class MyMemoryTranslationLibraryClient extends AbstractTranslationLibraryClient implements TranslationLibraryClient {
+public class MyMemoryTranslationEngineClient extends AbstractTranslationEngineClient implements TranslationLibraryClient {
 
     private static final String MY_MEMORY_URL = "https://api.mymemory.translated.net/get";
 

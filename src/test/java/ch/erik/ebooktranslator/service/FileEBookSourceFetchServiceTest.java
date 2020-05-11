@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
-import ch.erik.ebooktranslator.service.impl.FileEBookSourceFetchService;
+import ch.erik.ebooktranslator.service.translation.EBookSourceFetchService;
+import ch.erik.ebooktranslator.service.translation.impl.FileEBookSourceFetchService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.File;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = FileEBookSourceFetchServiceTest.Configuration.class)

@@ -1,4 +1,4 @@
-package ch.erik.ebooktranslator.service;
+package ch.erik.ebooktranslator.service.translation;
 
 import org.springframework.core.io.ClassPathResource;
 

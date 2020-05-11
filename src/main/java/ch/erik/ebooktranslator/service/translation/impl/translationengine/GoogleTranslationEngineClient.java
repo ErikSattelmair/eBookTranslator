@@ -1,11 +1,11 @@
-package ch.erik.ebooktranslator.service.impl;
+package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service("google")
 @Slf4j
-public class GoogleTranslationLibraryClient extends AbstractWebDriverTranslationLibrary {
+public class GoogleTranslationEngineClient extends AbstractWebDriverTranslationEngine {
 
     private static final String GOOGLE_TRANSLATOR_URL = "https://translate.google.com/";
 
