@@ -21,6 +21,7 @@
                         <label class="col-form-label" for="cover-image-file-path">Cover Image File Path</label>
                         <input class="form-control" id="cover-image-file-path" placeholder="Cover Image File Path"
                                th:field="*{coverImageFilePath}" type="text">
+                        <span th:if="${coverImageFilePathInvalid}">Cover image file path invalid!</span>
                     </div>
 
                     <div class="form-group col-md-6">
@@ -44,16 +45,12 @@
                         <label class="col-form-label" for="ebook-file-path">E-Book File Path</label>
                         <input class="form-control" id="ebook-file-path" placeholder="E-Book File Path"
                                th:field="*{ebookFilePath}" type="text">
+                        <span th:if="${ebookFilePathInvalid}">E-Book file path invalid!</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mt-5">
                         <input class="btn btn-primary" type="submit" value="Start translation">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mt-5">
-                        <span th:if="${requestInvalid}">Request parameters are invalid</span>
                     </div>
                 </div>
                 <div class="row">
