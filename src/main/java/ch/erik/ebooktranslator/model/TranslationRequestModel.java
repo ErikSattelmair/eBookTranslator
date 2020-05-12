@@ -20,8 +20,6 @@ public class TranslationRequestModel {
 
     private boolean useMyMemory;
 
-    private boolean useEbookFileFromDisk;
-
     @EbookFilePath
     private String ebookFilePath;
 

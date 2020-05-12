@@ -7,6 +7,7 @@ import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplT
 import ch.erik.ebooktranslator.service.translation.impl.translationengine.GoogleTranslationEngineClient;
 import ch.erik.ebooktranslator.service.translation.impl.translationengine.MyMemoryTranslationEngineClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,16 +40,15 @@ public class WorkflowEngineImpl implements WorkflowEngine {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final boolean useEbookOnDisk = translationRequestModel.isUseEbookFileFromDisk();
+        final String ebookFilePath = translationRequestModel.getEbookFilePath();
+        final boolean useEbookOnDisk = StringUtils.isNotBlank(ebookFilePath);
         byte[] eBook;
 
         try {
             if (useEbookOnDisk) {
-                final String ebookFilePath = translationRequestModel.getEbookFilePath();
                 log.debug("Use ebook file from disk at {}", ebookFilePath);
 
                 eBook = Files.readAllBytes(new File(ebookFilePath).toPath());
-                log.info("E-Book fetched");
             } else {
                 log.info("Downloading E-Book...");
                 this.eBookLibraryClient.downloadEBook();
@@ -56,8 +56,9 @@ public class WorkflowEngineImpl implements WorkflowEngine {
 
                 log.info("Fetching E-Book service...");
                 eBook = this.eBookSourceFetchService.getEbookSource(DOWNLOAD_FOLDER);
-                log.info("E-Book fetched");
             }
+
+            log.info("E-Book fetched");
 
             log.info("Translating E-Book...");
             final EBookTranslator eBookTranslator = new EBookFileTranslator(getTranslationEngine(translationRequestModel));

@@ -10,6 +10,6 @@ public class EbookFilePathValidator implements ConstraintValidator<EbookFilePath
 
     @Override
     public boolean isValid(final String payload, final ConstraintValidatorContext constraintValidatorContext) {
-        return StringUtils.isBlank(payload) || ValidationUtils.isFileValid(payload, Lists.newArrayList("eubp"));
+        return StringUtils.isBlank(payload) || ValidationUtils.isFileValid(payload, Lists.newArrayList("epub"));
     }
 }
