@@ -129,7 +129,6 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
 
                 wait.until(valueLoadedCondition());
 
-                final String translatedText = getTranslatedText(browser.findElement(By.xpath(getTargetWebElementClass())));
                 return getTranslatedText(browser.findElement(By.xpath(getTargetWebElementClass())));
             } catch (Exception e) {
                 log.error("Could not perform request. Reason {}", e.getMessage());
