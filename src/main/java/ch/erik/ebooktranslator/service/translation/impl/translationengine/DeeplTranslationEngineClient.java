@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
 @Service("deepl")
@@ -29,5 +30,10 @@ public class DeeplTranslationEngineClient extends AbstractWebDriverTranslationEn
     @Override
     protected int getMaxFragmentSize() {
         return 5_000;
+    }
+
+    @Override
+    protected String getTranslatedText(final WebElement webElement) {
+        return webElement.getAttribute("value");
     }
 }

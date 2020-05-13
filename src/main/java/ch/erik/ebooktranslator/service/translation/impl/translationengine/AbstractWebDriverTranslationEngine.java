@@ -34,7 +34,7 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
         final WebDriver browser = createBrowser(useProxy);
         browser.get(this.getUrl());
 
-        final WebElement source = browser.findElement(By.id("source"));
+        final WebElement source = browser.findElement(By.xpath(getSourceWebElementClass()));
         source.click();
 
         for (final Resource textResource : textResources) {
@@ -129,7 +129,8 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
 
                 wait.until(valueLoadedCondition());
 
-                return browser.findElement(By.xpath(getTargetWebElementClass())).getText();
+                final String translatedText = getTranslatedText(browser.findElement(By.xpath(getTargetWebElementClass())));
+                return getTranslatedText(browser.findElement(By.xpath(getTargetWebElementClass())));
             } catch (Exception e) {
                 log.error("Could not perform request. Reason {}", e.getMessage());
                 log.debug("Retries left: {}", maxRetries - retries);
@@ -159,4 +160,6 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
     protected abstract String getSourceWebElementClass();
 
     protected abstract String getTargetWebElementClass();
+
+    protected abstract String getTranslatedText(final WebElement webElement);
 }
