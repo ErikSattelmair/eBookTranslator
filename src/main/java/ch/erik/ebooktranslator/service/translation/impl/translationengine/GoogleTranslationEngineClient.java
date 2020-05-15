@@ -7,8 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service("google")
 @Slf4j
 public class GoogleTranslationEngineClient extends AbstractWebDriverTranslationEngine {
@@ -45,7 +43,6 @@ public class GoogleTranslationEngineClient extends AbstractWebDriverTranslationE
         final WebElement languageChooser = browser.findElement(By.className("tlid-open-target-language-list"));
         languageChooser.click();
 
-        final List<WebElement> elements = browser.findElements(By.className("language_list_item_wrapper-" + targetLanguage.getId().getLanguage()));
         final WebElement language = browser.findElements(By.className("language_list_item_wrapper-" + targetLanguage.getId().getLanguage())).get(2);
         language.click();
     }
