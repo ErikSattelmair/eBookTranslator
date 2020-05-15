@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.service.translation.impl.RandomProxyService;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,10 @@ public class DeeplTranslationEngineClient extends AbstractWebDriverTranslationEn
     //private static final String DEEPL_URL = "https://www.whatsmyip.org/";
 
     private static final String DEEPL_URL = "https://www.deepl.com/translator";
+
+    public DeeplTranslationEngineClient() {
+        super(new RandomProxyService());
+    }
 
     @Override
     protected String getSourceWebElementClass() {

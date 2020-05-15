@@ -1,7 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import ch.erik.ebooktranslator.model.TranslationParameterHolder;
-import ch.erik.ebooktranslator.service.translation.ProxyUtil;
+import ch.erik.ebooktranslator.service.translation.ProxyService;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import ch.erik.ebooktranslator.service.translation.UserAgent;
 import com.jayway.jsonpath.JsonPath;
@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,9 @@ public class MyMemoryTranslationEngineClient extends AbstractTranslationEngineCl
     private static final String MY_MEMORY_URL = "https://api.mymemory.translated.net/get";
 
     // private static final String MY_MEMORY_URL = "https://www.whatsmyip.org";
+
+    @Autowired
+    private ProxyService proxyService;
 
     @Override
     public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
@@ -87,7 +91,7 @@ public class MyMemoryTranslationEngineClient extends AbstractTranslationEngineCl
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
         if (usProxy) {
-            final String[] randomProxyParts = ProxyUtil.getRandomHttpsProxy().split(":");
+            final String[] randomProxyParts = this.proxyService.getProxy(true).split(":");
             final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(randomProxyParts[0], Integer.parseInt(randomProxyParts[1])));
             requestFactory.setProxy(proxy);
 

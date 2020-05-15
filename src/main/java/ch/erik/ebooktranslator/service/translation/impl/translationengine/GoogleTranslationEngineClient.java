@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.service.translation.impl.RandomProxyService;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 public class GoogleTranslationEngineClient extends AbstractWebDriverTranslationEngine {
 
     private static final String GOOGLE_TRANSLATOR_URL = "https://translate.google.com/";
+
+    public GoogleTranslationEngineClient() {
+        super(new RandomProxyService());
+    }
 
     @Override
     protected String getSourceWebElementClass() {

@@ -2,7 +2,8 @@ package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
 import ch.erik.ebooktranslator.model.Language;
 import ch.erik.ebooktranslator.model.TranslationParameterHolder;
-import ch.erik.ebooktranslator.service.translation.ProxyUtil;
+import ch.erik.ebooktranslator.service.translation.ProxyService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,9 +29,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public abstract class AbstractWebDriverTranslationEngine extends AbstractTranslationEngineClient {
 
     private static final String DELIMITER = "\n\n";
+
+    private final ProxyService proxyService;
 
     @Override
     public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
@@ -101,8 +107,8 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
 
         if (useProxy) {
             final Proxy proxy = new Proxy();
-            final String httpProxyAddress = ProxyUtil.getRandomHttpProxy();
-            final String httpsProxyAddress = ProxyUtil.getRandomHttpsProxy();
+            final String httpProxyAddress = this.proxyService.getProxy(false);
+            final String httpsProxyAddress = this.proxyService.getProxy(true);
             proxy.setHttpProxy(httpProxyAddress);
             proxy.setSslProxy(httpsProxyAddress);
 
