@@ -2,18 +2,19 @@ package ch.erik.ebooktranslator.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nl.siegmann.epublib.domain.Book;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Locale;
 
 @Data
 @AllArgsConstructor
-public class TranslationProcessingModel {
+@NoArgsConstructor
+public class Language {
 
     @NotNull
-    final Book original;
+    private Locale id;
 
-    @NotNull
-    final Book translation;
+    private String text;
 
 }

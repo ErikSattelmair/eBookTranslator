@@ -1,6 +1,8 @@
 package ch.erik.ebooktranslator.service;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.service.translation.EBookSaveService;
 import ch.erik.ebooktranslator.service.translation.EBookTranslator;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Locale;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = EpubFileReaderTest.Configuration.class)
@@ -39,7 +42,13 @@ public class EpubFileReaderTest {
     @Test
     @DisplayName("Test")
     public void testEpubFileReader() throws TranslationException, IOException {
-        final byte[] res = this.eBookTranslator.translateEBook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()), "", false);
+        final TranslationParameterHolder translationParameterHolder = TranslationParameterHolder.builder()
+                .ebook(Files.readAllBytes(new ClassPathResource(EPUB_FILE_PATH).getFile().toPath()))
+                .useProxy(false)
+                .coverImageFilePath("")
+                .targetLanguage(new Language(Locale.ENGLISH, "English"))
+                .build();
+        final byte[] res = this.eBookTranslator.translateEBook(translationParameterHolder);
         this.eBookSaveService.saveBook(res);
     }
 

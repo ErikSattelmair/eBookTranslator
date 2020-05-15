@@ -1,5 +1,6 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.service.translation.ProxyUtil;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import ch.erik.ebooktranslator.service.translation.UserAgent;
@@ -35,10 +36,11 @@ public class MyMemoryTranslationEngineClient extends AbstractTranslationEngineCl
     // private static final String MY_MEMORY_URL = "https://www.whatsmyip.org";
 
     @Override
-    public boolean translate(final List<Resource> textResources, final boolean useProxy) throws IOException {
+    public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
         for (final Resource textResource : textResources) {
             final byte[] resourceContent = textResource.getData();
             final Document document = Jsoup.parse(new String(resourceContent));
+            final boolean useProxy = translationParameterHolder.isUseProxy();
 
             document.title(translateText(document.title(), useProxy));
 

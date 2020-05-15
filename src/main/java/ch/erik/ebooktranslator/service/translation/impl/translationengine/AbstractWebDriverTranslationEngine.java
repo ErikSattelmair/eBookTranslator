@@ -1,5 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
+import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.service.translation.ProxyUtil;
 import lombok.extern.slf4j.Slf4j;
 import nl.siegmann.epublib.domain.Resource;
@@ -30,9 +32,11 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
     private static final String DELIMITER = "\n\n";
 
     @Override
-    public boolean translate(final List<Resource> textResources, final boolean useProxy) throws IOException {
-        final WebDriver browser = createBrowser(useProxy);
+    public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
+        final WebDriver browser = createBrowser(translationParameterHolder.isUseProxy());
         browser.get(this.getUrl());
+
+        selectTargetLanguage(browser, translationParameterHolder.getTargetLanguage());
 
         final WebElement source = browser.findElement(By.xpath(getSourceWebElementClass()));
         source.click();
@@ -161,4 +165,6 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
     protected abstract String getTargetWebElementClass();
 
     protected abstract String getTranslatedText(final WebElement webElement);
+
+    protected abstract void selectTargetLanguage(final WebDriver browser, final Language language);
 }

@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.service.translation.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.service.translation.EBookTranslator;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,8 @@ public class EBookFileTranslator implements EBookTranslator {
     private final TranslationLibraryClient translationLibraryClient;
 
     @Override
-    public byte[] translateEBook(final byte[] source, final String coverImageFilePath, final boolean useProxy) throws TranslationException {
+    public byte[] translateEBook(final TranslationParameterHolder translationParameterSet) throws TranslationException {
+        final byte[] source = translationParameterSet.getEbook();
         if (source != null) {
             final EpubReader epubReader = new nl.siegmann.epublib.epub.EpubReader();
 
@@ -33,15 +35,16 @@ public class EBookFileTranslator implements EBookTranslator {
                 final TableOfContents tableOfContents = book.getTableOfContents();
                 final List<TOCReference> tocReferences = tableOfContents.getTocReferences();
                 final List<Resource> tocReferenceResources = tocReferences.stream().map(ResourceReference::getResource).collect(Collectors.toList());
-                this.translationLibraryClient.translate(tocReferenceResources, useProxy);
+                this.translationLibraryClient.translate(tocReferenceResources, translationParameterSet);
 
                 final List<Resource> resources = book.getContents();
                 final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
 
                 // translate content
-                this.translationLibraryClient.translate(textResources, useProxy);
+                this.translationLibraryClient.translate(textResources, translationParameterSet);
 
                 // Add new cover image
+                final String coverImageFilePath = translationParameterSet.getCoverImageFilePath();
                 final String[] filePathSegments = coverImageFilePath.split(File.pathSeparator);
                 final String fileName = filePathSegments[filePathSegments.length - 1];
                 book.setCoverImage(new Resource(new FileInputStream(new File(coverImageFilePath)), fileName));

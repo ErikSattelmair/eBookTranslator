@@ -1,6 +1,8 @@
 package ch.erik.ebooktranslator.service.translation.impl;
 
 import ch.erik.ebooktranslator.exception.TranslationException;
+import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.model.TranslationRequestModel;
 import ch.erik.ebooktranslator.service.translation.*;
 import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplTranslationEngineClient;
@@ -63,8 +65,16 @@ public class WorkflowEngineImpl implements WorkflowEngine {
             log.info("Translating E-Book...");
             final EBookTranslator eBookTranslator = new EBookFileTranslator(getTranslationEngine(translationRequestModel));
             final boolean useProxy = translationRequestModel.isUseProxy();
-            final String ebookCoverImage = translationRequestModel.getCoverImageFilePath();
-            final byte[] translatedEbook = eBookTranslator.translateEBook(eBook, ebookCoverImage, useProxy);
+            final String ebookCoverImagePath = translationRequestModel.getCoverImageFilePath();
+            final Language targetLanguage = translationRequestModel.getTargetLanguage();
+
+            final TranslationParameterHolder translationParameterSet = TranslationParameterHolder.builder()
+                    .ebook(eBook)
+                    .coverImageFilePath(ebookCoverImagePath)
+                    .useProxy(useProxy)
+                    .targetLanguage(targetLanguage)
+                    .build();
+            final byte[] translatedEbook = eBookTranslator.translateEBook(translationParameterSet);
             log.info("Translation done");
 
             log.info("Saving E-Book...");

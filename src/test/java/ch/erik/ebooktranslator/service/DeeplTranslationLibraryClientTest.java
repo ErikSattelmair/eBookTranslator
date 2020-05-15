@@ -1,5 +1,7 @@
 package ch.erik.ebooktranslator.service;
 
+import ch.erik.ebooktranslator.model.Language;
+import ch.erik.ebooktranslator.model.TranslationParameterHolder;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import ch.erik.ebooktranslator.service.translation.impl.translationengine.DeeplTranslationEngineClient;
 import nl.siegmann.epublib.domain.Book;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
@@ -33,8 +36,12 @@ public class DeeplTranslationLibraryClientTest {
         final EpubReader epubReader = new EpubReader();
         final Book book = epubReader.readEpub(new FileInputStream(new ClassPathResource("").getFile()));
         final List<Resource> textResources = book.getContents().stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
+        final TranslationParameterHolder translationParameterHolder = TranslationParameterHolder.builder()
+                .useProxy(false)
+                .targetLanguage(new Language(Locale.ENGLISH, "English"))
+                .build();
 
-        Assertions.assertTrue(this.translationLibraryClient.translate(textResources, false));
+        Assertions.assertTrue(this.translationLibraryClient.translate(textResources, translationParameterHolder));
     }
 
     public static class Configuration {

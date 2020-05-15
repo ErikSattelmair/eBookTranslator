@@ -23,4 +23,6 @@ public class TranslationRequestModel {
     @EbookFilePath
     private String ebookFilePath;
 
+    private Language targetLanguage;
+
 }

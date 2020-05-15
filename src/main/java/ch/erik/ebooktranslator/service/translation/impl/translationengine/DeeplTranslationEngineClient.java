@@ -1,6 +1,9 @@
 package ch.erik.ebooktranslator.service.translation.impl.translationengine;
 
+import ch.erik.ebooktranslator.model.Language;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +38,15 @@ public class DeeplTranslationEngineClient extends AbstractWebDriverTranslationEn
     @Override
     protected String getTranslatedText(final WebElement webElement) {
         return webElement.getAttribute("value");
+    }
+
+    @Override
+    protected void selectTargetLanguage(final WebDriver browser, final Language targetLanguage) {
+        final WebElement languageChooser = browser.findElement(By.className("lmt__language_select--target"));
+        languageChooser.click();
+
+        final String languageXpath = "//*[@id=\"dl_translator\"]/div[1]/div[4]/div[1]/div[1]/div[1]/div/button[@dl-test=\"translator-lang-option-" + targetLanguage.getId().toString().replace('_', '-') + "\"]";
+        final WebElement language = browser.findElement(By.xpath(languageXpath));
+        language.click();
     }
 }

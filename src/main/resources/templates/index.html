@@ -50,6 +50,16 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mt-5">
+                        <select class="form-control" id="target-language"
+                                th:field="${translationRequestModel.targetLanguage.id}">
+                            <option value="0">Select target language</option>
+                            <option th:each="language : ${targetLanguages}" th:text="${language.text}"
+                                    th:value="${language.id}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
                         <input class="btn btn-primary" type="submit" value="Start translation">
                     </div>
                 </div>

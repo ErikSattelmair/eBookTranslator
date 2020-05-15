@@ -1,6 +1,7 @@
 package ch.erik.ebooktranslator.controller;
 
 import ch.erik.ebooktranslator.model.TranslationRequestModel;
+import ch.erik.ebooktranslator.service.translation.SupportedLanguages;
 import ch.erik.ebooktranslator.service.translation.WorkflowEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class TranslationController {
     @GetMapping("/")
     public String showMainPage(final Model model) {
         model.addAttribute("translationRequestModel", new TranslationRequestModel());
+        model.addAttribute("targetLanguages", SupportedLanguages.getSupportedLanguages());
         return "index";
     }
 
@@ -49,20 +51,13 @@ public class TranslationController {
                     }
                 }
             }
-
-            return "index";
         } else {
             final boolean translationSuccessful = this.workflowEngine.startWorkflow(translationRequestModel);
-
-            if (!translationSuccessful) {
-                model.addAttribute("translationSuccessful", false);
-                return "index";
-            }
-
-            model.addAttribute("translationSuccessful", true);
-
-            return "index";
+            model.addAttribute("translationSuccessful", translationSuccessful);
         }
+
+        model.addAttribute("targetLanguages", SupportedLanguages.getSupportedLanguages());
+        return "index";
     }
 
 }
