@@ -61,13 +61,11 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
 
             for (final TextNode textNode : textNodes) {
                 final String textNodeText = textNode.text();
-                if (stringBuilder.length() + textNodeText.length() + DELIMITER.length() <= getMaxFragmentSize()) {
-                    stringBuilder.append(textNodeText).append(DELIMITER);
-                } else {
+                if (stringBuilder.length() + textNodeText.length() + DELIMITER.length() > getMaxFragmentSize()) {
                     textsToTranslate.add(stringBuilder.toString());
                     stringBuilder.setLength(0);
-                    stringBuilder.append(textNodeText).append(DELIMITER);
                 }
+                stringBuilder.append(textNodeText).append(DELIMITER);
             }
 
             textsToTranslate.add(stringBuilder.toString());
@@ -90,9 +88,11 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
 
                 for (int i = 0; i < translatedJoinedTextsParts.length; i++) {
                     final TextNode textNode = textNodes.get(i);
-                    textNode.text(translatedTexts.get(0));
+                    textNode.text(translatedJoinedTextsParts[i]);
                 }
             }
+
+            textResource.setData(document.toString().getBytes());
         }
 
         browser.close();
@@ -125,15 +125,15 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
             return text;
         }
 
-        final int maxRetries = 20;
-        int retries = 0;
+        final int maxRetries = 100;
+        int retries = 1;
 
         while (retries <= maxRetries) {
             try {
                 final WebElement sourceTextArea = browser.findElement(By.xpath(getSourceWebElementClass()));
                 sourceTextArea.clear();
 
-                final WebDriverWait wait = new WebDriverWait(browser, 5);
+                final WebDriverWait wait = new WebDriverWait(browser, 3);
                 wait.until(valueLoadedCondition());
                 sourceTextArea.sendKeys(text);
 
@@ -142,7 +142,7 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
                 return getTranslatedText(browser.findElement(By.xpath(getTargetWebElementClass())));
             } catch (Exception e) {
                 log.error("Could not perform request. Reason {}", e.getMessage());
-                log.debug("Retries left: {}", maxRetries - retries);
+                log.error("Retries left: {}", maxRetries - retries);
                 retries++;
             }
         }

@@ -40,9 +40,11 @@ public class ProcessingController {
                 final Book original = epubReader.readEpub(originalInputStream);
                 final Book translation = epubReader.readEpub(translationInputStream);
 
-                // TODO: Check if E-Books are the same
-
-                model.addAttribute("translationProcessingModel", new TranslationProcessingModel(original, translation));
+                if (original.getTitle().equalsIgnoreCase(translation.getTitle())) {
+                    model.addAttribute("translationProcessingModel", new TranslationProcessingModel(original, translation));
+                } else {
+                    model.addAttribute("eBooksNotIdentical", true);
+                }
             } catch (IOException e) {
                 log.error("Could not read at least one e-book file!");
                 model.addAttribute("processingError", true);

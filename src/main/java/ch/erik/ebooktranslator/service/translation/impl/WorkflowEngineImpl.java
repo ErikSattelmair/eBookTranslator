@@ -81,8 +81,8 @@ public class WorkflowEngineImpl implements WorkflowEngine {
             this.eBookSaveService.saveBook(translatedEbook);
             log.info("E-Book saved");
 
-            log.info("Send E-Book via mail to Steffen and me...");
-            final boolean emailSendingResult = this.mailService.sendMail(translatedEbook);
+            log.info("Send E-Books via mail to Steffen and me...");
+            final boolean emailSendingResult = this.mailService.sendMail(eBook, translatedEbook);
             log.info(emailSendingResult ? "E-Mail send successfully" : "E-Mail could not be sent");
 
             stopWatch.stop();
