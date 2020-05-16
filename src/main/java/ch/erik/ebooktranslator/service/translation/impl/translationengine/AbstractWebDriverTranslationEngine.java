@@ -20,6 +20,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
     private final ProxyService proxyService;
 
     @Override
-    public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
+    public List<Resource> translate(final List<Resource> resources, final TranslationParameterHolder translationParameterHolder) throws IOException {
         final WebDriver browser = createBrowser(translationParameterHolder.isUseProxy());
         browser.get(this.getUrl());
 
@@ -47,57 +48,61 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
         final WebElement source = browser.findElement(By.xpath(getSourceWebElementClass()));
         source.click();
 
-        for (final Resource textResource : textResources) {
-            final byte[] resourceContent = textResource.getData();
-            final Document document = Jsoup.parse(new String(resourceContent));
+        for (final Resource resource : resources) {
+            if (resource.getMediaType().getName().equals(MediaType.APPLICATION_XHTML_XML_VALUE)) {
+                final byte[] resourceContent = resource.getData();
+                final Document document = Jsoup.parse(new String(resourceContent));
+                document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+                document.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
 
-            document.title(translateText(browser, document.title()));
+                document.title(translateText(browser, document.title()));
 
-            final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
-            final List<TextNode> textNodes = elements.textNodes();
+                final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
+                final List<TextNode> textNodes = elements.textNodes();
 
-            final List<String> textsToTranslate = new ArrayList<>();
-            final StringBuilder stringBuilder = new StringBuilder();
+                final List<String> textsToTranslate = new ArrayList<>();
+                final StringBuilder stringBuilder = new StringBuilder();
 
-            for (final TextNode textNode : textNodes) {
-                final String textNodeText = textNode.text();
-                if (stringBuilder.length() + textNodeText.length() + DELIMITER.length() > getMaxFragmentSize()) {
-                    textsToTranslate.add(stringBuilder.toString());
-                    stringBuilder.setLength(0);
+                for (final TextNode textNode : textNodes) {
+                    final String textNodeText = textNode.text();
+                    if (stringBuilder.length() + textNodeText.length() + DELIMITER.length() > getMaxFragmentSize()) {
+                        textsToTranslate.add(stringBuilder.toString());
+                        stringBuilder.setLength(0);
+                    }
+                    stringBuilder.append(textNodeText).append(DELIMITER);
                 }
-                stringBuilder.append(textNodeText).append(DELIMITER);
-            }
 
-            textsToTranslate.add(stringBuilder.toString());
+                textsToTranslate.add(stringBuilder.toString());
 
-            final int numberOfLettersToProcessInTotal = textsToTranslate.stream().map(String::length).mapToInt(Integer::intValue).sum();
-            log.info("Numbers of letters to process in total: {}", numberOfLettersToProcessInTotal);
-            log.info("Numbers of textNodes to process: {}", textNodes.size());
+                final int numberOfLettersToProcessInTotal = textsToTranslate.stream().map(String::length).mapToInt(Integer::intValue).sum();
+                log.info("Numbers of letters to process in total: {}", numberOfLettersToProcessInTotal);
+                log.info("Numbers of textNodes to process: {}", textNodes.size());
 
-            final int numberOfTextNodesLetters = textNodes.stream().map(textNode -> textNode.text().length()).mapToInt(Integer::intValue).sum();
-            log.info("Numbers of textNodes letters to process: {}", numberOfTextNodesLetters);
-            log.info("Numbers of texts to translate: {}", textsToTranslate.size());
-            log.info(StringUtils.repeat("-", 20) + "\n\n");
+                final int numberOfTextNodesLetters = textNodes.stream().map(textNode -> textNode.text().length()).mapToInt(Integer::intValue).sum();
+                log.info("Numbers of textNodes letters to process: {}", numberOfTextNodesLetters);
+                log.info("Numbers of texts to translate: {}", textsToTranslate.size());
+                log.info(StringUtils.repeat("-", 20) + "\n\n");
 
-            if (numberOfLettersToProcessInTotal > 0) {
-                final List<String> translatedTexts = textsToTranslate.stream()
-                        .map(text -> translateText(browser, text))
-                        .collect(Collectors.toList());
+                if (numberOfLettersToProcessInTotal > 0) {
+                    final List<String> translatedTexts = textsToTranslate.stream()
+                            .map(text -> translateText(browser, text))
+                            .collect(Collectors.toList());
 
-                final String[] translatedJoinedTextsParts = String.join(DELIMITER, translatedTexts).split(DELIMITER);
+                    final String[] translatedJoinedTextsParts = String.join(DELIMITER, translatedTexts).split(DELIMITER);
 
-                for (int i = 0; i < translatedJoinedTextsParts.length; i++) {
-                    final TextNode textNode = textNodes.get(i);
-                    textNode.text(translatedJoinedTextsParts[i]);
+                    for (int i = 0; i < translatedJoinedTextsParts.length; i++) {
+                        final TextNode textNode = textNodes.get(i);
+                        textNode.text(translatedJoinedTextsParts[i]);
+                    }
                 }
-            }
 
-            textResource.setData(document.toString().getBytes());
+                resource.setData(document.html().getBytes());
+            }
         }
 
         browser.close();
 
-        return true;
+        return resources;
     }
 
     private WebDriver createBrowser(final boolean useProxy) throws IOException {
@@ -153,7 +158,7 @@ public abstract class AbstractWebDriverTranslationEngine extends AbstractTransla
     private ExpectedCondition<Boolean> valueLoadedCondition() {
         return driver -> {
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 log.warn("Could not put thread to sleep");
             }

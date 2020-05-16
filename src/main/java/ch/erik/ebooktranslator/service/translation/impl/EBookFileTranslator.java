@@ -6,13 +6,13 @@ import ch.erik.ebooktranslator.service.translation.EBookTranslator;
 import ch.erik.ebooktranslator.service.translation.TranslationLibraryClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.siegmann.epublib.domain.*;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
 import nl.siegmann.epublib.epub.EpubWriter;
 
 import java.io.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -32,16 +32,10 @@ public class EBookFileTranslator implements EBookTranslator {
 
                 inputStream.close();
 
-                final TableOfContents tableOfContents = book.getTableOfContents();
-                final List<TOCReference> tocReferences = tableOfContents.getTocReferences();
-                final List<Resource> tocReferenceResources = tocReferences.stream().map(ResourceReference::getResource).collect(Collectors.toList());
-                this.translationLibraryClient.translate(tocReferenceResources, translationParameterSet);
-
-                final List<Resource> resources = book.getContents();
-                final List<Resource> textResources = resources.stream().filter(resource -> resource.getMediaType().getName().equals("application/xhtml+xml")).collect(Collectors.toList());
-
                 // translate content
-                this.translationLibraryClient.translate(textResources, translationParameterSet);
+                final List<Resource> results = this.translationLibraryClient.translate(book.getContents(), translationParameterSet);
+                book.getContents().clear();
+                book.getContents().addAll(results);
 
                 // Add new cover image
                 final String coverImageFilePath = translationParameterSet.getCoverImageFilePath();

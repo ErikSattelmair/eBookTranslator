@@ -40,23 +40,25 @@ public class MyMemoryTranslationEngineClient extends AbstractTranslationEngineCl
     private ProxyService proxyService;
 
     @Override
-    public boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException {
-        for (final Resource textResource : textResources) {
-            final byte[] resourceContent = textResource.getData();
-            final Document document = Jsoup.parse(new String(resourceContent));
-            final boolean useProxy = translationParameterHolder.isUseProxy();
+    public List<Resource> translate(final List<Resource> resources, final TranslationParameterHolder translationParameterHolder) throws IOException {
+        for (final Resource resource : resources) {
+            if (resource.getMediaType().getName().equals("application/xhtml+xml")) {
+                final byte[] resourceContent = resource.getData();
+                final Document document = Jsoup.parse(new String(resourceContent));
+                final boolean useProxy = translationParameterHolder.isUseProxy();
 
-            document.title(translateText(document.title(), useProxy));
+                document.title(translateText(document.title(), useProxy));
 
-            final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
-            final List<TextNode> textNodes = elements.textNodes();
+                final Elements elements = document.select(HTML_TAGS_CONTAINING_TEXT);
+                final List<TextNode> textNodes = elements.textNodes();
 
-            textNodes.stream().parallel()
-                    .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
-                    .forEach(textNode -> translateText(textNode.text(), useProxy));
+                textNodes.stream().parallel()
+                        .filter(textNode -> StringUtils.isNotBlank(textNode.getWholeText()))
+                        .forEach(textNode -> translateText(textNode.text(), useProxy));
+            }
         }
 
-        return true;
+        return resources;
     }
 
     private String translateText(final String text, final boolean usProxy) {

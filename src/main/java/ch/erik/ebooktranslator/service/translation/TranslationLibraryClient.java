@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TranslationLibraryClient {
 
-    boolean translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException;
+    List<Resource> translate(final List<Resource> textResources, final TranslationParameterHolder translationParameterHolder) throws IOException;
 
 }
