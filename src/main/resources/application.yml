@@ -10,6 +10,7 @@ spring:
     port: 587
     username: eriksattelmair@gmail.com
     password: wrtslixxoerscowx
+    protocol: smtp
     properties:
       mail:
         smtp:
