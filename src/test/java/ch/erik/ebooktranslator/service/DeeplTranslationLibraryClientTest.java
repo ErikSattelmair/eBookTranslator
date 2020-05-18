@@ -41,7 +41,7 @@ public class DeeplTranslationLibraryClientTest {
                 .targetLanguage(new Language(Locale.ENGLISH, "English"))
                 .build();
 
-        Assertions.assertTrue(this.translationLibraryClient.translate(textResources, translationParameterHolder));
+        Assertions.assertFalse(this.translationLibraryClient.translate(textResources, translationParameterHolder).isEmpty());
     }
 
     public static class Configuration {
