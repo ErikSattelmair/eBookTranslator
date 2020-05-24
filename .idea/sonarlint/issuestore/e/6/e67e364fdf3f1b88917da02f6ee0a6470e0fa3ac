@@ -1,6 +1,0 @@
-
-b	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(æÖ¸ø8¸ÂÖªŸ.
-W	java:S899#";Do something with the "boolean" value returned by "delete".(¸—é»8ÊÚÇ«Ÿ.
-g	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(‡ ÇŒûÿÿÿÿ8ÍöÔªŸ.
-k
-java:S4042#"NUse "java.nio.file.Files#delete" here for better messages on error conditions.(¸—é»8ÊÚÇ«Ÿ.
